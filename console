@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Console Application Entry Point
+ * 
+ * Usage: php console <command> [options]
+ */
+
+// Load Composer's autoloader
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Load global constants
+require_once __DIR__ . '/src/config/constants.php';
+
+use App\App\Console\ConsoleKernel;
+
+try {
+   $kernel = new ConsoleKernel();
+   $exitCode = $kernel->handle($argv);
+   exit($exitCode);
+} catch (Exception $e) {
+   echo "\n\033[31mError:\033[0m " . $e->getMessage() . "\n\n";
+   exit(1);
+}

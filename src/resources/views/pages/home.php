@@ -25,6 +25,7 @@ declare(strict_types=1); ?>
             <ul>
                <li><a href="#routing">Routing</a></li>
                <li><a href="#models">Models</a></li>
+               <li><a href="#migrations">Migrations</a></li>
                <li><a href="#controllers">Controllers</a></li>
                <li><a href="#controller-helpers">Controller Helpers</a></li>
                <li><a href="#views">Views</a></li>
@@ -216,6 +217,72 @@ $activeUsers = User::query()
     ->orderBy('created_at', 'DESC')
     ->limit(10)
     ->get();</code></pre>
+            </div>
+         </section>
+
+         <!-- Migrations -->
+         <section id="migrations" class="doc-section">
+            <h2>🏗️ Migrations</h2>
+            <p>Manage your database schema with the Schema builder and migration files.</p>
+
+            <h3>✨ CLI Commands</h3>
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Terminal</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-bash"># Create a new migration
+php console make:migration create_products_table
+
+# Run pending migrations
+php console migrate
+
+# Rollback last batch
+php console migrate:rollback
+
+# Show migration status
+php console migrate:status</code></pre>
+            </div>
+
+            <h3>📐 Schema Builder</h3>
+            <p>Define your table structure with a fluent interface:</p>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Create Table</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">use App\App\Database\Schema;
+use App\App\Database\Blueprint;
+
+Schema::create('orders', function (Blueprint $table) {
+    $table->id();                                   // Auto-increment primary key
+    $table->bigInteger('user_id')->unsigned();      // Foreign key column
+    $table->decimal('total', 10, 2);                // Decimal with precision
+    $table->enum('status', ['pending', 'paid']);    // Enum column
+    $table->boolean('is_shipped')->default(false);  // Boolean with default
+    $table->timestamps();                           // created_at, updated_at
+    
+    // Foreign Key Constraint
+    $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+});</code></pre>
+            </div>
+
+            <p><strong>Available Column Types:</strong> <code>string</code>, <code>text</code>, <code>integer</code>, <code>boolean</code>, <code>decimal</code>, <code>date</code>, <code>dateTime</code>, <code>timestamp</code>, <code>json</code>, <code>enum</code>, <code>softDeletes</code>.</p>
+
+            <h3>🔄 Reverse Engineering</h3>
+            <p>Generate migrations from an existing database schema:</p>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Generate Migrations</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-bash"># Generate migrations for all tables
+php console migrate:generate
+
+# Sync database with migration files (detect changes)
+php console migrate:sync --fix</code></pre>
             </div>
          </section>
 

@@ -9,12 +9,14 @@ A modern PHP MVC framework with Single Page Application (SPA) capabilities, Lara
 
 - **🚀 Modern Router** - Laravel-style fluent API with middleware support
 - **💾 Streamlined Model** - Clean query builder with mass assignment protection
+- **🗄️ Database Migrations** - Bidirectional migrations with reverse engineering
 - **⚡ SPA System** - Server-side rendering with client-side navigation
 - **🔒 Error Handler** - Comprehensive error handling with AJAX/SPA support
 - **🎨 Dark Mode** - Built-in dark mode support with persistence
 - **📦 Modular Architecture** - Clean separation of concerns
 - **🔐 Middleware Pipeline** - Authentication, permissions, and custom middleware
 - **🌐 Base Path Support** - Works in subdirectories and production
+- **⚙️ CLI Console** - Powerful command-line tools for migrations and more
 
 ## 📋 Requirements
 
@@ -80,6 +82,7 @@ Visit `http://localhost:8000` in your browser.
 - [Controller Guide](CONTROLLER.md) - Base controller methods and usage examples
 - [Router Guide](docs/ROUTER.md) - Laravel-style routing documentation
 - [Model Guide](docs/MODEL.md) - Database and ORM usage
+- **[Migration Guide](MIGRATIONS.md) - Database migrations and schema management** ⭐ NEW
 - [SPA Guide](docs/SPA.md) - Single Page Application implementation
 - [Error Handler](docs/ERROR_HANDLER.md) - Error handling system
 
@@ -89,6 +92,10 @@ Visit `http://localhost:8000` in your browser.
 mvc-js/
 ├── src/
 │   ├── App/
+│   │   ├── Console/          # CLI commands
+│   │   │   ├── Commands/    # Migration commands
+│   │   │   ├── Command.php
+│   │   │   └── ConsoleKernel.php
 │   │   ├── Controllers/      # Application controllers
 │   │   ├── Core/             # Core framework classes
 │   │   │   ├── Application.php
@@ -96,6 +103,13 @@ mvc-js/
 │   │   │   ├── Model.php
 │   │   │   ├── View.php
 │   │   │   └── Middleware/
+│   │   ├── Database/         # Database utilities
+│   │   │   ├── Migration.php
+│   │   │   ├── Schema.php
+│   │   │   ├── Blueprint.php
+│   │   │   ├── MigrationManager.php
+│   │   │   ├── SchemaInspector.php
+│   │   │   └── MigrationGenerator.php
 │   │   └── Models/           # Application models
 │   ├── Helpers/              # Helper classes and functions
 │   ├── config/               # Configuration files
@@ -107,7 +121,10 @@ mvc-js/
 │   │   ├── web.php
 │   │   └── api.php
 │   └── storage/             # Logs, cache, uploads
+├── database/
+│   └── migrations/          # Database migration files
 ├── vendor/                  # Composer dependencies
+├── console                  # CLI entry point
 ├── .htaccess               # Apache rewrite rules
 ├── index.php               # Application entry point
 └── composer.json           # Dependencies
@@ -157,6 +174,65 @@ $user = User::create([
 // Relationships (coming soon)
 $user->posts()->get();
 ```
+
+### Database Migrations ⭐ NEW
+
+Powerful bidirectional migration system with reverse engineering capabilities.
+
+```bash
+# Create a new migration
+php console make:migration create_products_table
+
+# Run pending migrations
+php console migrate
+
+# Rollback last batch
+php console migrate:rollback
+
+# Check migration status
+php console migrate:status
+
+# Generate migrations from existing database
+php console migrate:generate --table=users
+
+# Sync database with migrations (detect inconsistencies)
+php console migrate:sync --fix
+```
+
+```php
+// Example migration file
+Schema::create('products', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->text('description')->nullable();
+    $table->decimal('price', 10, 2)->unsigned();
+    $table->integer('stock')->default(0);
+    $table->boolean('is_active')->default(true);
+    $table->timestamps();
+    $table->softDeletes();
+
+    // Indexes
+    $table->unique('sku');
+    $table->index('name');
+
+    // Foreign keys
+    $table->foreign('category_id')
+        ->references('id')
+        ->on('categories')
+        ->onDelete('cascade');
+});
+```
+
+**Key Features:**
+
+- ✅ Forward & reverse migrations
+- ✅ Generate from existing database tables
+- ✅ Detect schema inconsistencies
+- ✅ Transaction-safe execution
+- ✅ Fluent schema builder
+- ✅ Full CLI support
+
+See [Migration Guide](MIGRATIONS.md) for complete documentation.
 
 ### SPA System
 
@@ -229,12 +305,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🗺️ Roadmap
 
-- [ ] Database migrations system
+- [x] **Database migrations system** ✅ COMPLETED
+- [x] **CLI tool for migrations** ✅ COMPLETED
 - [ ] Model relationships (hasMany, belongsTo, etc.)
 - [ ] Authentication scaffolding
+- [ ] Database seeders
 - [ ] API rate limiting
 - [ ] WebSocket support
-- [ ] CLI tool for code generation
 - [ ] Unit testing framework integration
 
 ---
