@@ -1,3 +1,6 @@
+<?php
+
+declare(strict_types=1); ?>
 <div class="docs-layout">
    <!-- Sidebar Navigation -->
    <aside class="docs-sidebar">
@@ -23,6 +26,7 @@
                <li><a href="#routing">Routing</a></li>
                <li><a href="#models">Models</a></li>
                <li><a href="#controllers">Controllers</a></li>
+               <li><a href="#controller-helpers">Controller Helpers</a></li>
                <li><a href="#views">Views</a></li>
                <li><a href="#spa">SPA System</a></li>
             </ul>
@@ -249,6 +253,143 @@ $activeUsers = User::query()
         redirect('/users');
     }
 }</code></pre>
+            </div>
+         </section>
+
+         <!-- Controller Helper Methods -->
+         <section id="controller-helpers" class="doc-section">
+            <h2>🎯 Controller Helper Methods</h2>
+            <p>The base Controller class provides comprehensive helper methods for common tasks. <a href="<?= url('/') ?>/CONTROLLER.md" target="_blank">View full documentation</a></p>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Request & Validation</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">class UserController extends Controller
+{
+    public function store(): void
+    {
+        // Verify CSRF and validate in one line
+        $this->verifyCsrfOrFail();
+        
+        // Validate with auto-redirect on failure
+        $validated = $this->validateOrFail([
+            'name' => 'required|min:3',
+            'email' => 'required|email'
+        ]);
+        
+        // Get specific inputs
+        $data = $this->only(['name', 'email', 'phone']);
+        
+        User::create($validated);
+        
+        // Redirect with flash message
+        $this->redirectWith(url('/users'), 'User created!', 'success');
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>File Uploads</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">public function uploadAvatar(): void
+{
+    if ($this->hasFile('avatar')) {
+        // Validate file
+        $errors = $this->validateFile('avatar', [
+            'maxSize' => 2097152, // 2MB
+            'allowedTypes' => ['image/jpeg', 'image/png']
+        ]);
+        
+        if (empty($errors)) {
+            // Move file
+            $path = $this->moveFile('avatar', 'public/uploads/avatars');
+            $this->success('Avatar uploaded!', ['path' => $path]);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Authentication & Authorization</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">public function dashboard(): void
+{
+    // Require authentication or redirect
+    $this->requireAuth();
+    
+    // Get user data
+    $userId = $this->userId();
+    $user = $this->user();
+    
+    $this->view('dashboard', ['user' => $user]);
+}
+
+public function login(): void
+{
+    // Only allow guests
+    $this->requireGuest();
+    $this->view('auth/login');
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Session & Flash Messages</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">// Set flash message
+$this->flash('success', 'Profile updated!');
+
+// Set session data
+$this->setSession('cart', $cartData);
+
+// Get session data
+$cart = $this->session('cart', []);
+
+// Redirect back
+$this->back();</code></pre>
+            </div>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Pagination & Utilities</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">public function index(): void
+{
+    $total = User::count();
+    $pagination = $this->paginate($total, 20);
+    
+    $users = User::limit($pagination['per_page'])
+        ->offset($pagination['offset'])
+        ->get();
+    
+    $this->view('users/index', [
+        'users' => $users,
+        'pagination' => $pagination
+    ]);
+}</code></pre>
+            </div>
+
+            <div class="info-box">
+               <strong>📖 Available Helper Methods:</strong>
+               <ul style="margin-top: 10px; line-height: 1.8;">
+                  <li><strong>Request:</strong> <code>input()</code>, <code>all()</code>, <code>only()</code>, <code>except()</code>, <code>has()</code>, <code>filled()</code></li>
+                  <li><strong>Response:</strong> <code>view()</code>, <code>json()</code>, <code>success()</code>, <code>error()</code></li>
+                  <li><strong>Redirect:</strong> <code>redirect()</code>, <code>back()</code>, <code>redirectWith()</code></li>
+                  <li><strong>Validation:</strong> <code>validate()</code>, <code>validateOrFail()</code>, <code>verifyCsrf()</code>, <code>verifyCsrfOrFail()</code></li>
+                  <li><strong>Session:</strong> <code>session()</code>, <code>setSession()</code>, <code>hasSession()</code>, <code>forgetSession()</code></li>
+                  <li><strong>Flash:</strong> <code>flash()</code>, <code>getFlash()</code>, <code>hasFlash()</code></li>
+                  <li><strong>Files:</strong> <code>hasFile()</code>, <code>file()</code>, <code>moveFile()</code>, <code>validateFile()</code></li>
+                  <li><strong>Auth:</strong> <code>isAuthenticated()</code>, <code>userId()</code>, <code>user()</code>, <code>requireAuth()</code>, <code>requireGuest()</code></li>
+                  <li><strong>Utilities:</strong> <code>abort()</code>, <code>paginate()</code>, <code>isPost()</code>, <code>isGet()</code>, <code>method()</code></li>
+               </ul>
             </div>
          </section>
 

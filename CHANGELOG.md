@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Enhanced base Controller class with comprehensive common methods:
+  - Session management (`session()`, `setSession()`, `hasSession()`, `forgetSession()`)
+  - Flash message support (`flash()`, `getFlash()`, `hasFlash()`)
+  - Request helpers (`all()`, `only()`, `except()`, `has()`, `filled()`, `isPost()`, `isGet()`, `method()`)
+  - Response helpers (`success()`, `error()`)
+  - Redirect helpers (`back()`, `redirectWith()`)
+  - File upload handling (`hasFile()`, `file()`, `moveFile()`, `validateFile()`)
+  - Authorization helpers (`isAuthenticated()`, `userId()`, `user()`, `requireAuth()`, `requireGuest()`)
+  - Utility methods (`abort()`, `paginate()`)
+  - Enhanced validation integration (`validateOrFail()`, `verifyCsrf()`, `verifyCsrfOrFail()`)
+
 ## [0.1.0-alpha] - 2026-02-06
 
 ### Added

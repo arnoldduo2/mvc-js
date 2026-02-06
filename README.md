@@ -77,6 +77,7 @@ Visit `http://localhost:8000` in your browser.
 ## 📚 Documentation
 
 - [Architecture Guide](ARCHITECTURE.md) - System architecture and design patterns
+- [Controller Guide](CONTROLLER.md) - Base controller methods and usage examples
 - [Router Guide](docs/ROUTER.md) - Laravel-style routing documentation
 - [Model Guide](docs/MODEL.md) - Database and ORM usage
 - [SPA Guide](docs/SPA.md) - Single Page Application implementation
