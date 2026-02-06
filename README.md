@@ -29,7 +29,7 @@ A modern PHP MVC framework with Single Page Application (SPA) capabilities, Lara
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mvc-js.git
+git clone https://github.com/arnoldduo2/mvc-js.git
 cd mvc-js
 
 # Install dependencies
