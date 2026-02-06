@@ -1,0 +1,21 @@
+{
+  "name": "{APP_NAME}",
+  "short_name": "{APP_NAME}",
+  "start_url": "{APP_URL}",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "{APP_URL}/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "{APP_URL}/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#00a000",
+  "background_color": "#f5f5f5",
+  "display": "standalone"
+}
