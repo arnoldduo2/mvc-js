@@ -1,6 +1,10 @@
 # Enable URL Rewriting
 RewriteEngine On
 
+# Masked Resources
+RewriteRule ^css/(.*)$ src/resources/css/$1 [L]
+RewriteRule ^js/(.*)$ src/resources/js/$1 [L]
+
 # Redirect to index.php if not a file or directory
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

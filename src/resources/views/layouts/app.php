@@ -9,7 +9,7 @@ declare(strict_types=1); ?>
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title><?= $title ?? APP_NAME ?></title>
    <link rel="icon" type="image/svg+xml" href="<?= url('/favicon.svg') ?>">
-   <link rel="stylesheet" href="<?= url('/src/resources/css/app.css') ?>">
+   <link rel="stylesheet" href="<?= url('/css/app.css') ?>">
    <link rel="stylesheet" href="<?= url('/demo/assets/prism.css') ?>">
    <link rel="stylesheet" href="<?= url('/demo/assets/landing.css') ?>">
    <link rel="stylesheet" href="<?= url('/demo/assets/docs.css') ?>">
@@ -37,7 +37,7 @@ declare(strict_types=1); ?>
    <script src="<?= url('/demo/assets/prism.js') ?>"></script>
 
    <!-- SPA Application (ES6 Module) -->
-   <script type="module" src="<?= url('/src/resources/js/app.js') ?>"></script>
+   <script type="module" src="<?= url('/js/app.js') ?>"></script>
 </body>
 
 </html>

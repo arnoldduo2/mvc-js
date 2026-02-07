@@ -32,6 +32,9 @@ class ConsoleKernel
          new Commands\MakeMigrationCommand(),
          new Commands\MigrateGenerateCommand(),
          new Commands\MigrateSyncCommand(),
+         new Commands\MakeModelCommand(),
+         new Commands\MakeControllerCommand(),
+         new Commands\ServeCommand(),
       ];
    }
 
