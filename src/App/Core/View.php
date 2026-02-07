@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\App\Core;
 
+use ErrorException;
+
 /**
  * View Class
  * 
@@ -75,15 +77,28 @@ HTML;
       extract($data);
 
       // Build view file path
-      $viewFile = self::$viewPath . $view . '.php';
+      // 1. Check pages directory first
+      $pagesFile = self::$viewPath . 'pages/' . $view . '.php';
 
-      if (!file_exists($viewFile)) {
-         // Check fallback path
-         $fallbackFile = self::$fallbackViewPath . $view . '.php';
-         if (!file_exists($fallbackFile)) {
-            throw new \Exception("View file not found: {$viewFile} (and fallback {$fallbackFile})");
+      if (file_exists($pagesFile)) {
+         $viewFile = $pagesFile;
+      } else {
+         // 2. Check root views directory (for layouts, errors, partials)
+         $viewFile = self::$viewPath . $view . '.php';
+
+         if (!file_exists($viewFile)) {
+            // 3. Check fallback paths
+            $fallbackPages = self::$fallbackViewPath . 'pages/' . $view . '.php';
+            $fallbackRoot = self::$fallbackViewPath . $view . '.php';
+
+            if (file_exists($fallbackPages)) {
+               $viewFile = $fallbackPages;
+            } elseif (file_exists($fallbackRoot)) {
+               $viewFile = $fallbackRoot;
+            } else {
+               throw new \Exception("View file not found: {$view} (checked pages/ and root)");
+            }
          }
-         $viewFile = $fallbackFile;
       }
 
       // Start output buffering
@@ -150,7 +165,7 @@ HTML;
          }
 
          // Render layout
-         echo self::render('layouts/app', $data);
+         echo self::render('app', $data);
       }
    }
 
@@ -215,17 +230,38 @@ HTML;
    }
 
    /**
-    * Render a layout with content
+    * Render a Main layout with content
     * 
     * @param string $layout Layout file path
     * @param string $content Content to insert
     * @param array $data Additional data
     * @return string Rendered HTML
     */
-   public static function layout(string $layout, string $content, array $data = []): string
+   public static function mainLayout(string $mainLayout, string $content, array $data = []): string
    {
       $data['content'] = $content;
-      return self::render($layout, $data);
+      return self::render($mainLayout, $data);
+   }
+
+   /**
+    * Find A partial to include if need. They are found inside the pages/<pageName>/partials
+    * @param string $name
+    * @param array $data
+    * @throws ErrorException
+    */
+   public static function partials(string $name, array $data = [])
+   {
+      $required = [];
+      $name = str_replace('.', '/', $name);
+      foreach ($required as $r => $val) {
+         $data[$r] = $val;
+      }
+
+      $file = self::$viewPath . "$name.php";
+      if (!file_exists($file)) {
+         throw new ErrorException("View file not found: $file");
+      }
+      return require_once $file;
    }
 
    /**
@@ -234,10 +270,10 @@ HTML;
     * @param string $view View file path
     * @param array $data Data to pass to view
     * @param int $ttl Cache time to live in seconds
-    * @param string $layout Layout file (default: 'layouts/app')
+    * @param string $mainApp Main app layout file (default: 'app')
     * @return void
     */
-   public static function cached(string $view, array $data = [], int $ttl = 3600, string $layout = 'layouts/app'): void
+   public static function cached(string $view, array $data = [], int $ttl = 3600, string $mainApp = 'app'): void
    {
       // Generate cache key based on view and data
       $cacheKey = 'view:' . $view . ':' . md5(serialize($data));
@@ -252,7 +288,7 @@ HTML;
 
       // Render view
       ob_start();
-      self::page($view, $data, $layout);
+      self::page($view, $data, $mainApp);
       $output = ob_get_clean();
 
       // Cache the output

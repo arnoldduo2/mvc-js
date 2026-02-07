@@ -7,6 +7,7 @@ declare(strict_types=1);
 // without namespace qualification
 
 use App\App\Core\Env;
+use App\App\Core\View;
 use App\Helpers\AppLogicHelpers;
 use App\Helpers\StringHelper;
 use App\Helpers\EncyptionHelper;
@@ -576,4 +577,60 @@ function cookie(?string $key = null, mixed $default = null): mixed
    }
 
    return \App\App\Core\Cookie::get($key, $default);
+}
+function isAjaxRequest(): bool
+{
+   return !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
+      && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+}
+
+function addAssets($assets = [], $type = 'css')
+{
+   $html = '';
+   foreach ($assets as $asset) {
+      if ($type == 'css') {
+         $html .= '<link rel="stylesheet" href="' . url($asset) . '">';
+      } else if ($type == 'js') {
+         $html .= '<script src="' . url($asset) . '"></script>';
+      }
+   }
+   return $html;
+}
+
+/**
+ * Summary of useSpa
+ * @return string
+ */
+function useSpa(): string
+{
+   return View::coreScripts();
+}
+/**
+ * Loads Includes Partials/ Layouts Render Template Views.
+ * @param string $name Name of the view file or folder, separated with a . or /
+ * @param array $data Data Array to be loaded with the view
+ * @return mixed Returns the view Object that renders the file.
+ */
+function __includes(string $name, array $data = []): mixed
+{
+   return View::partials($name, $data);
+}
+
+/**
+ * Render the Views Template.
+ * @param string $view Name of the view or the folder with the view resides. folders can be seperated with a dot or a /
+ * @param array $data Data Array that needs to be passed to the view.
+ * @return mixed
+ */
+function view(string $view, array $data = []): mixed
+{
+
+   if (isAjaxRequest()) // Return JSON for SPA
+      View::page($view, $data);
+   else {
+      // Render full HTML page
+      $content = View::render($view, $data);
+      echo View::mainLayout('app', $content, $data);
+   }
+   return true;
 }

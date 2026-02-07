@@ -9,7 +9,7 @@ The enhanced base Controller class provides comprehensive helper methods for com
 Render a view with automatic SPA detection.
 
 ```php
-$this->view('pages/dashboard', ['title' => 'Dashboard']);
+return view('dashboard', ['title' => 'Dashboard']);
 ```
 
 ### `json(array $data, int $statusCode = 200)`
@@ -393,7 +393,7 @@ class UserController extends Controller
         $search = $this->input('search', '');
         $users = User::where('name', 'LIKE', "%{$search}%")->get();
 
-        $this->view('users/index', [
+        return view('users/index', [
             'title' => 'Users',
             'users' => $users,
             'search' => $search
@@ -403,7 +403,7 @@ class UserController extends Controller
     public function create(): void
     {
         $this->requireAuth();
-        $this->view('users/create', ['title' => 'Create User']);
+        return view('users/create', ['title' => 'Create User']);
     }
 
     public function store(): void

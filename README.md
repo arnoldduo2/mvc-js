@@ -85,6 +85,7 @@ Visit `http://localhost:8000` in your browser.
 - **[Migration Guide](MIGRATIONS.md) - Database migrations and schema management** ⭐ NEW
 - [SPA Guide](docs/SPA.md) - Single Page Application implementation
 - [Error Handler](docs/ERROR_HANDLER.md) - Error handling system
+- [Helper Functions](docs/HELPERS.md) - Global helper functions guide
 
 ## 🏗️ Project Structure
 
@@ -109,7 +110,7 @@ mvc-js/
 │   │   │   ├── Blueprint.php
 │   │   │   ├── MigrationManager.php
 │   │   │   ├── SchemaInspector.php
-│   │   │   └── MigrationGenerator.php
+│   │   │   ├── MigrationGenerator.php
 │   │   └── Models/           # Application models
 │   ├── Helpers/              # Helper classes and functions
 │   ├── config/               # Configuration files
@@ -117,6 +118,10 @@ mvc-js/
 │   │   ├── css/             # Stylesheets
 │   │   ├── js/              # JavaScript (ES6 modules)
 │   │   └── views/           # View templates
+│   │       ├── pages/       # Page views
+│   │       ├── layouts/     # Layout partials (header, footer)
+│   │       ├── components/  # Reusable components
+│   │       └── app.php      # Main Application Layout
 │   ├── routes/              # Route definitions
 │   │   ├── web.php
 │   │   └── api.php

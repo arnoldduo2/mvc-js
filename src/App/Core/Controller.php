@@ -36,7 +36,7 @@ abstract class Controller
       } else {
          // Render full HTML page
          $content = View::render($view, $data);
-         echo View::layout('layouts/app', $content, $data);
+         echo View::mainLayout('app', $content, $data);
       }
    }
 
@@ -590,7 +590,7 @@ abstract class Controller
             'message' => $message,
          ]);
 
-         echo View::layout('layouts/app', $content, [
+         echo View::mainLayout('app', $content, [
             'title' => "Error {$code}",
          ]);
          exit;

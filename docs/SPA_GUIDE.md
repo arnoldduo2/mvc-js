@@ -14,11 +14,9 @@ This framework includes a robust, zero-configuration Single Page Application (SP
 
 ### Controller
 
-In your controller, use the `View::page()` method. This method automatically detects if the request is an SPA navigation or a full page load and returns the appropriate response (JSON or HTML).
+In your controller, use the global `view()` helper. This helper automatically detects if the request is an SPA navigation or a full page load and returns the appropriate response (JSON or HTML).
 
 ```php
-use App\App\Core\View;
-
 public function index()
 {
     // Data to pass to the view
@@ -28,8 +26,8 @@ public function index()
         'stats' => ['views' => 100, 'clicks' => 50]
     ];
 
-    // Arguments: View File, Data, Page Title
-    View::page('pages.dashboard', $data, 'My Dashboard');
+    // Arguments: View File, Data
+    return view('dashboard', $data);
 }
 ```
 
@@ -109,7 +107,7 @@ If you attach event listeners to `window` or `document` (which persist across pa
 The framework simplifies asset management by automatically injecting CSS and JS files that match your view structure.
 
 **How it works:**
-If you render a view named `pages/dashboard` or `pages.dashboard` (dot notation is supported), the framework automatically looks for:
+If you render a view named `dashboard` (which resolves to `pages/dashboard`), the framework automatically looks for:
 
 1.  `src/resources/css/pages/dashboard.css`
 2.  `src/resources/js/pages/dashboard.js`
@@ -125,7 +123,7 @@ You do NOT need to manually add `<link>` or `<script>` tags.
 
 ## 4. Components
 
-The framework supports reusable components with dot notation.
+The framework supports reusable components via the `View::component` method or by including partials.
 
 **Usage:**
 
@@ -145,14 +143,14 @@ Variables passed in the array are available in the component view.
 
 ### Layouts
 
-Your main layout (e.g., `src/resources/views/layouts/app.php`) must include the core scripts helper. This ensures the Router, Timer Patch, and Configuration are loaded in the correct order.
+Your main layout (e.g., `src/resources/views/app.php`) must include the core scripts helper using `useSpa()`. This ensures the Router, Timer Patch, and Configuration are loaded in the correct order.
 
 ```php
 <head>
     <!-- ... css links ... -->
 
     <!-- REQUIRED: Loads Timer Patch, App Config, and SPA Engine -->
-    <?= \App\App\Core\View::coreScripts() ?>
+    <?= useSpa() ?>
 </head>
 ```
 

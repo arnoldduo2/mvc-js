@@ -1,0 +1,17 @@
+View file not found: D:\APPDEV\xampp\htdocs\mvc-js\src/resources/views/pages/layouts/header.php in D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\View.php on line 262
+#0 D:\APPDEV\xampp\htdocs\mvc-js\src\Helpers\helpers.php(612): App\App\Core\View::partials('layouts/header', Array)
+#1 D:\APPDEV\xampp\htdocs\mvc-js\src\resources\views\app.php(24): __includes('layouts/header')
+#2 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\View.php(108): include('D:\\APPDEV\\xampp...')
+#3 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\View.php(243): App\App\Core\View::render('app', Array)
+#4 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Controller.php(39): App\App\Core\View::mainLayout('app', '<div style="fon...', Array)
+#5 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Controllers\HomeController.php(13): App\App\Core\Controller->view('home', Array)
+#6 [internal function]: App\App\Controllers\HomeController->index()
+#7 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(315): call_user_func_array(Array, Array)
+#8 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(255): App\App\Core\Router::executeAction(Array, Array)
+#9 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(261): App\App\Core\Router::App\App\Core\{closure}(Array)
+#10 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(221): App\App\Core\Router::executeRoute(Object(App\App\Core\Route), Array)
+#11 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Application.php(271): App\App\Core\Router::dispatch()
+#12 D:\APPDEV\xampp\htdocs\mvc-js\src\boot\app.php(20): App\App\Core\Application->run()
+#13 D:\APPDEV\xampp\htdocs\mvc-js\index.php(20): require_once('D:\\APPDEV\\xampp...')
+#14 D:\APPDEV\xampp\htdocs\mvc-js\src\boot\boot.php(51): require_once('D:\\APPDEV\\xampp...')
+#15 {main}

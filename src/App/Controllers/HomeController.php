@@ -8,9 +8,9 @@ use App\App\Core\Controller;
 
 class HomeController extends Controller
 {
-   public function index(): void
+   public function index()
    {
-      $this->view('home', [
+      return view('home', [
          'title' => 'Welcome',
       ]);
    }

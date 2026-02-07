@@ -41,7 +41,7 @@ class ErrorController extends Controller
          // Try to use the app layout if possible, otherwise render standalone
          try {
             $content = View::render('errors/404');
-            echo View::layout('layouts/app', $content, [
+            echo View::mainLayout('app', $content, [
                'title' => '404 - Page Not Found'
             ]);
          } catch (\Throwable $e) {
@@ -79,7 +79,7 @@ class ErrorController extends Controller
       } else {
          try {
             $content = View::render('errors/403', $data);
-            echo View::layout('layouts/app', $content, $data);
+            echo View::mainLayout('app', $content, $data);
          } catch (\Throwable $e) {
             echo "<h1>403 Forbidden</h1>";
          }
