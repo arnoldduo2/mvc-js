@@ -23,7 +23,13 @@ class Database
                 $pass = env('DB_PASSWORD', '');
 
                 if ($engine === 'sqlite') {
-                    $dsn = "sqlite:" . $name;
+                    $databasePath = defined('APP_STORAGE') ? APP_STORAGE . '/database/database.sqlite' : dirname(__DIR__, 2) . '/storage/database/database.sqlite';
+
+                    if (!file_exists($databasePath)) {
+                        throw new PDOException("SQLite database file not found: $databasePath");
+                    }
+
+                    $dsn = "sqlite:$databasePath";
                     self::$conn = new PDO($dsn);
                 } else {
                     $dsn = "{$engine}:host={$host};dbname={$name}";
