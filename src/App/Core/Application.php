@@ -19,11 +19,26 @@ class Application
    private static bool $booted = false;
 
    /**
+    * @var Container
+    */
+   private Container $container;
+
+   /**
+    * @var array Registered service providers
+    */
+   private array $providers = [];
+
+   /**
     * Private constructor to prevent direct instantiation
     */
    private function __construct()
    {
-      // Router is handled via static methods in the legacy Router class
+      $this->container = new Container();
+
+      // Bind the application instance to the container
+      $this->container->singleton(Application::class, function () {
+         return $this;
+      });
    }
 
    /**
@@ -60,6 +75,9 @@ class Application
       // Initialize error handling
       $this->initializeErrorHandling();
 
+      // Boot service providers
+      $this->bootProviders();
+
       // Load routes
       $this->loadRoutes();
 
@@ -67,6 +85,64 @@ class Application
       self::$booted = true;
 
       return $this;
+   }
+
+   /**
+    * Register a service provider
+    * 
+    * @param string $providerClass
+    * @return void
+    */
+   public function register(string $providerClass): void
+   {
+      $provider = new $providerClass($this);
+      $provider->register();
+      $this->providers[] = $provider;
+   }
+
+   /**
+    * Boot all registered service providers
+    */
+   private function bootProviders(): void
+   {
+      foreach ($this->providers as $provider) {
+         $provider->boot();
+      }
+   }
+
+   /**
+    * Resolve a class from the container
+    * 
+    * @param string $abstract
+    * @return mixed
+    */
+   public function make(string $abstract): mixed
+   {
+      return $this->container->make($abstract);
+   }
+
+   /**
+    * Bind a class to the container
+    * 
+    * @param string $abstract
+    * @param mixed $concrete
+    * @return void
+    */
+   public function bind(string $abstract, mixed $concrete = null): void
+   {
+      $this->container->bind($abstract, $concrete);
+   }
+
+   /**
+    * Bind a singleton to the container
+    * 
+    * @param string $abstract
+    * @param mixed $concrete
+    * @return void
+    */
+   public function singleton(string $abstract, mixed $concrete = null): void
+   {
+      $this->container->singleton($abstract, $concrete);
    }
 
    /**
@@ -91,11 +167,19 @@ class Application
          APP_CONFIG . '/app.php',
          APP_CONFIG . '/database.php',
          APP_CONFIG . '/session.php',
+         APP_CONFIG . '/providers.php', // Add providers config
       ];
 
       foreach ($configFiles as $file) {
          if (file_exists($file)) {
-            require_once $file;
+            $result = require_once $file;
+
+            // If it's the providers config, register them
+            if ($file === APP_CONFIG . '/providers.php' && is_array($result)) {
+               foreach ($result as $providerClass) {
+                  $this->register($providerClass);
+               }
+            }
          }
       }
    }

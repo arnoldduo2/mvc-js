@@ -29,6 +29,7 @@ declare(strict_types=1); ?>
                <li><a href="#controllers">Controllers</a></li>
                <li><a href="#controller-helpers">Controller Helpers</a></li>
                <li><a href="#views">Views</a></li>
+               <li><a href="#components">Components</a></li>
                <li><a href="#spa">SPA System</a></li>
             </ul>
          </div>
@@ -37,6 +38,7 @@ declare(strict_types=1); ?>
             <h3>Advanced</h3>
             <ul>
                <li><a href="#middleware">Middleware</a></li>
+               <li><a href="#service-providers">Service Providers</a></li>
                <li><a href="#caching">Caching</a></li>
                <li><a href="#validation">Validation</a></li>
                <li><a href="#helpers">Helpers</a></li>
@@ -484,10 +486,28 @@ View::cached('pages/home', $data, 3600);</code></pre>
             </div>
          </section>
 
+         <!-- Components -->
+         <section id="components" class="doc-section">
+            <h2>🧩 Components</h2>
+            <p>Reusable UI components with dot notation support. <a href="<?= url('/') ?>/COMPONENTS.md" target="_blank">View full documentation</a></p>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Usage</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">// Render component
+<?= "<?=" ?> View::component('ui.card', ['title' => 'Hello']) ?>
+
+// Dot notation
+<?= "<?=" ?> View::component('forms.input', ['name' => 'email']) ?></code></pre>
+            </div>
+         </section>
+
          <!-- SPA -->
          <section id="spa" class="doc-section">
             <h2>⚡ SPA System</h2>
-            <p>Built-in single-page application with smooth transitions:</p>
+            <p>Built-in single-page application with smooth transitions. <a href="<?= url('/') ?>/SPA_GUIDE.md" target="_blank">View full documentation</a></p>
 
             <div class="code-block">
                <div class="code-header">
@@ -529,6 +549,26 @@ Router::group(['middleware' => 'auth'], function() {
     Router::get('/profile', [ProfileController::class, 'show']);
     Router::get('/settings', [SettingsController::class, 'index']);
 });</code></pre>
+            </div>
+         </section>
+
+         <!-- Service Providers -->
+         <section id="service-providers" class="doc-section">
+            <h2>🔌 Service Providers</h2>
+            <p>Manage class dependencies and perform dependency injection. <a href="<?= url('/') ?>/SERVICE_PROVIDERS.md" target="_blank">View full documentation</a></p>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Service Provider</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->bind(UserRepository::class, EloquentUserRepository::class);
+    }
+}</code></pre>
             </div>
          </section>
 

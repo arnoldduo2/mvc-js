@@ -15,6 +15,7 @@ class View
     * Base path for views
     */
    private static string $viewPath = '';
+   private static string $fallbackViewPath = '';
 
    /**
     * Initialize view path
@@ -23,7 +24,37 @@ class View
    {
       if (empty(self::$viewPath)) {
          self::$viewPath = dirname(__DIR__, 2) . '/resources/views/';
+         self::$fallbackViewPath = __DIR__ . '/resources/views/';
       }
+   }
+
+   /**
+    * Output core SPA scripts
+    * 
+    * @return string HTML script tags
+    */
+   public static function coreScripts(): string
+   {
+      self::init();
+
+      $timerPatch = file_get_contents(__DIR__ . '/resources/js/timer-patch.js');
+      $basePath = \App\App\Core\Router::basePath();
+      $appUrl = \App\App\Core\Router::url('/core-js/app.js');
+
+      return <<<HTML
+      <!-- Core Timer Patch (Must run first) -->
+      <script>
+      {$timerPatch}
+      </script>
+      
+      <!-- App Configuration -->
+      <script>
+         window.APP_BASE_PATH = '{$basePath}';
+      </script>
+      
+      <!-- SPA Application -->
+      <script type="module" src="{$appUrl}"></script>
+HTML;
    }
 
    /**
@@ -37,6 +68,9 @@ class View
    {
       self::init();
 
+      // Convert dot notation to path
+      $view = str_replace('.', '/', $view);
+
       // Extract data to variables
       extract($data);
 
@@ -44,7 +78,12 @@ class View
       $viewFile = self::$viewPath . $view . '.php';
 
       if (!file_exists($viewFile)) {
-         throw new \Exception("View file not found: {$viewFile}");
+         // Check fallback path
+         $fallbackFile = self::$fallbackViewPath . $view . '.php';
+         if (!file_exists($fallbackFile)) {
+            throw new \Exception("View file not found: {$viewFile} (and fallback {$fallbackFile})");
+         }
+         $viewFile = $fallbackFile;
       }
 
       // Start output buffering
@@ -72,17 +111,92 @@ class View
       array $data = [],
       string $title = '',
       array $scripts = [],
-      int $executeAfter = 100
+      int $executeAfter = 100,
+      int $statusCode = 200
    ): void {
       $content = self::render($view, $data);
 
-      self::json([
-         'type' => 'html',
-         'content' => $content,
-         'title' => $title ?: ($data['title'] ?? APP_NAME),
-         'scripts' => $scripts,
-         'executeAfter' => $executeAfter,
-      ]);
+      // Auto-inject assets (CSS/JS) matching the view name
+      $assets = self::getAssets($view);
+
+      // Always append JS to content (bottom of body)
+      if (!empty($assets['js'])) {
+         $content .= $assets['js'];
+      }
+
+      // Check if SPA request
+      if (self::isSpaRequest()) {
+         // For SPA, we append CSS to content so it loads with the partial
+         // The router replaces the app container content, so this works
+         if (!empty($assets['css'])) {
+            $content .= $assets['css'];
+         }
+
+         self::json([
+            'type' => 'html',
+            'content' => $content,
+            'title' => $title ?: ($data['title'] ?? APP_NAME),
+            'scripts' => $scripts,
+            'executeAfter' => $executeAfter,
+         ], $statusCode);
+      } else {
+         // Full page load
+         $data['content'] = $content;
+         $data['title'] = $title ?: ($data['title'] ?? APP_NAME);
+
+         // Inject CSS into <head> via layout variable
+         if (!empty($assets['css'])) {
+            $data['head'] = $assets['css'];
+         }
+
+         // Render layout
+         echo self::render('layouts/app', $data);
+      }
+   }
+
+   /**
+    * Check if request is an SPA request
+    */
+   private static function isSpaRequest(): bool
+   {
+      return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+   }
+
+   /**
+    * Get automatic assets (CSS/JS) if they exist
+    * 
+    * @param string $view View name (e.g. 'dashboard/stats')
+    * @return array ['css' => string, 'js' => string]
+    */
+   private static function getAssets(string $view): array
+   {
+      $view = str_replace('.', '/', $view);
+      $css = '';
+      $js = '';
+
+      // Check for CSS
+      $cssPath = '/css/' . $view . '.css'; // URL path
+      $cssFile = dirname(__DIR__, 2) . '/resources' . $cssPath; // File path
+
+      if (file_exists($cssFile)) {
+         $url = \App\App\Core\Router::url($cssPath);
+         $css = '<link rel="stylesheet" href="' . $url . '">';
+      }
+
+      // Check for JS
+      $jsPath = '/js/' . $view . '.js'; // URL path
+      $jsFile = dirname(__DIR__, 2) . '/resources' . $jsPath; // File path
+
+      if (file_exists($jsFile)) {
+         $url = \App\App\Core\Router::url($jsPath);
+         // Add timestamp to force reload if needed, or just use clean URL
+         // Using module type if it contains import/export, strictly standard script for now
+         // adhering to user request for "script"
+         $js = '<script src="' . $url . '"></script>';
+      }
+
+      return ['css' => $css, 'js' => $js];
    }
 
    /**
@@ -164,5 +278,44 @@ class View
       // Note: This is a simple implementation
       // For production, you'd want a more sophisticated pattern matching
       return Cache::forget($pattern);
+   }
+
+   /**
+    * Render a component
+    * 
+    * @param string $name Component name (dot notation supported, e.g. 'ui.card')
+    * @param array $data Data to pass to component
+    * @return string Rendered component HTML
+    */
+   public static function component(string $name, array $data = []): string
+   {
+      self::init();
+
+      // Convert dot notation to path
+      $path = str_replace('.', '/', $name);
+
+      // Build component file path
+      // Components are stored in src/resources/views/components/
+      $file = self::$viewPath . 'components/' . $path . '.php';
+
+      if (!file_exists($file)) {
+         // Try fallback path if defined
+         $fallbackFile = self::$fallbackViewPath . 'components/' . $path . '.php';
+         if (!file_exists($fallbackFile)) {
+            return "<!-- Component '{$name}' not found at {$file} -->";
+         }
+         $file = $fallbackFile;
+      }
+
+      // Extract data
+      extract($data);
+
+      // Start output buffering
+      ob_start();
+
+      // Include component
+      include $file;
+
+      return ob_get_clean();
    }
 }

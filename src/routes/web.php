@@ -52,3 +52,11 @@ Router::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], fun
       echo "<p>Settings page</p>";
    })->name('admin.settings');
 });
+
+// Test route for automatic asset injection
+Router::get('/test/auto-assets', function () {
+   return \App\App\Core\View::page('test.auto-assets', [], 'Asset Injection Test');
+});
+
+// Test route for Dependency Injection
+Router::get('/test/di', [\App\App\Controllers\TestDIController::class, 'index']);

@@ -30,6 +30,19 @@ if (strpos($uri, '/css/') === 0 || strpos($uri, '/js/') === 0) {
    }
 }
 
+// Handle core JS resources
+if (strpos($uri, '/core-js/') === 0) {
+   // Remove /core-js/ prefix to get the file path
+   $file = substr($uri, 9); // length of '/core-js/'
+   $resourcePath = __DIR__ . '/../App/Core/resources/js/' . $file;
+
+   if (file_exists($resourcePath)) {
+      header('Content-Type: application/javascript');
+      readfile($resourcePath);
+      exit;
+   }
+}
+
 // Provide your own way to serve other static resources
 if ($uri !== '/' && file_exists(__DIR__ . '/../../' . $uri)) {
    return false;

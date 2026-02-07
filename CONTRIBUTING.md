@@ -44,7 +44,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/your-username/mvc-js.git
+git clone https://github.com/arnoldduo2/mvc-js.git
 cd mvc-js
 
 # Install dependencies

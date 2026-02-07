@@ -307,20 +307,21 @@ class Router
             [$controller, $method] = $action;
 
             if (is_string($controller)) {
-                $controller = new $controller();
+                // Resolve controller via Service Container
+                $controller = Application::getInstance()->make($controller);
             }
 
             if (method_exists($controller, $method)) {
                 return call_user_func_array([$controller, $method], $params);
             }
 
-            throw new Exception("Method {$method} not found in controller");
+            throw new Exception("Method {$method} not found in controller " . get_class($controller));
         }
 
         if (is_string($action) && str_contains($action, '::')) {
             // Execute static method
             [$controller, $method] = explode('::', $action);
-            $controller = new $controller();
+            // Static methods don't need instantiation via container
             return call_user_func_array([$controller, $method], $params);
         }
 
@@ -334,8 +335,16 @@ class Router
      */
     private static function handleNotFound(): void
     {
-        $errorController = new \App\App\Controllers\ErrorController();
-        $errorController->notFound();
+        $appErrorController = 'App\\App\\Controllers\\ErrorController';
+        $coreErrorController = 'App\\App\\Core\\Controllers\\ErrorController';
+
+        if (class_exists($appErrorController)) {
+            $controller = new $appErrorController();
+        } else {
+            $controller = new $coreErrorController();
+        }
+
+        $controller->notFound();
     }
 
     /**

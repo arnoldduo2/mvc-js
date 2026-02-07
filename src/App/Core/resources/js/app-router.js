@@ -15,7 +15,22 @@ export class Router {
 
     this.basePath = window.APP_BASE_PATH || "";
     this.currentUrl = window.location.pathname;
+
+    // Timer management (patched globally)
     this.init();
+  }
+
+  /**
+   * Clear all managed timers
+   */
+  clearAllTimers() {
+    if (window.__SPA_TIMERS__) {
+      window.__SPA_TIMERS__.intervals.forEach((id) => window.clearInterval(id));
+      window.__SPA_TIMERS__.intervals.clear();
+
+      window.__SPA_TIMERS__.timeouts.forEach((id) => window.clearTimeout(id));
+      window.__SPA_TIMERS__.timeouts.clear();
+    }
   }
 
   /**
@@ -105,11 +120,22 @@ export class Router {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      // Check if response is JSON (even error statuses should return JSON in SPA mode)
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        // Not JSON (e.g. server error HTML or auth redirect)
+        // Fall back to full page load
+        window.location.assign(url);
+        return;
       }
 
       const data = await response.json();
+
+      // Check for application-level error in JSON
+      if (!response.ok && !data.content && !data.error) {
+        // If 404/500 but no content provided in JSON, treat as failure
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
 
       // Update page
       this.updatePage(data);
@@ -118,8 +144,8 @@ export class Router {
       this.triggerEvent("pageLoaded", { url, data });
     } catch (error) {
       console.error("Failed to load page:", error);
-      this.showError(`Failed to load page: ${error.message}`);
-      this.triggerEvent("pageLoadError", { url, error });
+      // On network error or other failure, fallback to full load
+      window.location.assign(url);
     } finally {
       this.hideLoading();
     }
@@ -129,6 +155,10 @@ export class Router {
    * Update page content and metadata
    */
   updatePage(data) {
+    // Cleanup previous page
+    this.clearAllTimers();
+    this.triggerEvent("page:unload");
+
     // Check if this is an error response
     if (data.error || data.type === "error") {
       this.handleErrorResponse(data);
@@ -145,6 +175,9 @@ export class Router {
       const appContainer = document.getElementById(this.options.appContainer);
       if (appContainer) {
         appContainer.innerHTML = data.content;
+
+        // Execute embedded scripts in content
+        this.executeEmbeddedScripts(appContainer);
       } else {
         console.warn(`App container #${this.options.appContainer} not found`);
       }
@@ -164,6 +197,37 @@ export class Router {
 
     // Scroll to top
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /**
+   * Execute scripts embedded in the new content
+   */
+  executeEmbeddedScripts(container) {
+    const scripts = container.querySelectorAll("script");
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement("script");
+
+      // Copy attributes
+      Array.from(oldScript.attributes).forEach((attr) => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+
+      // Copy content
+      // Wrap in IIFE to prevent global scope pollution
+      const isModule = oldScript.type === "module";
+      if (!isModule && !oldScript.src) {
+        newScript.textContent = `
+          {
+            ${oldScript.textContent}
+          }
+        `;
+      } else {
+        newScript.textContent = oldScript.textContent;
+      }
+
+      // Replace old script with new one to trigger execution
+      oldScript.parentNode.replaceChild(newScript, oldScript);
+    });
   }
 
   /**

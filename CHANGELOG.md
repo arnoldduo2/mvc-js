@@ -87,5 +87,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **0.1.0-alpha** (2026-02-06) - Initial alpha pre-release
 
-[Unreleased]: https://github.com/yourusername/mvc-js/compare/v0.1.0-alpha...HEAD
-[0.1.0-alpha]: https://github.com/yourusername/mvc-js/releases/tag/v0.1.0-alpha
+[Unreleased]: https://github.com/arnoldduo2/mvc-js/compare/v0.1.0-alpha...HEAD
+[0.1.0-alpha]: https://github.com/arnoldduo2/mvc-js/releases/tag/v0.1.0-alpha

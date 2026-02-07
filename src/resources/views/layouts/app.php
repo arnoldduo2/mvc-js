@@ -13,10 +13,9 @@ declare(strict_types=1); ?>
    <link rel="stylesheet" href="<?= url('/demo/assets/prism.css') ?>">
    <link rel="stylesheet" href="<?= url('/demo/assets/landing.css') ?>">
    <link rel="stylesheet" href="<?= url('/demo/assets/docs.css') ?>">
-   <script>
-      // Make base path available to JavaScript
-      window.APP_BASE_PATH = '<?= \App\App\Core\Router::basePath() ?>';
-   </script>
+   <!-- Core SPA Scripts -->
+   <?= \App\App\Core\View::coreScripts() ?>
+   <?= $head ?? '' ?>
 </head>
 
 <body>
@@ -36,8 +35,7 @@ declare(strict_types=1); ?>
    <!-- Syntax Highlighting (Demo - can be removed) -->
    <script src="<?= url('/demo/assets/prism.js') ?>"></script>
 
-   <!-- SPA Application (ES6 Module) -->
-   <script type="module" src="<?= url('/js/app.js') ?>"></script>
+
 </body>
 
 </html>

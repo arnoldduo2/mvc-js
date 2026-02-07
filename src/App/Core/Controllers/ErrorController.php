@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\App\Controllers;
+namespace App\App\Core\Controllers;
 
 use App\App\Core\Controller;
 use App\App\Core\View;
 
 /**
- * Error Controller
+ * Core Error Controller
  * 
- * Handles error pages with SPA and API compatibility
+ * Handles default error pages when no application-level error controller is provided.
  */
 class ErrorController extends Controller
 {
@@ -28,37 +28,36 @@ class ErrorController extends Controller
       $isSpaRequest = $this->isSpaRequest();
 
       if ($isApiRequest) {
-         // Return JSON error for API requests
          View::json([
             'error' => true,
             'message' => 'Route not found',
             'code' => 404,
          ], 404);
       } elseif ($isSpaRequest) {
-         // Return SPA-compatible response
          View::page('errors/404', [
             'title' => '404 - Page Not Found'
-         ]);
+         ], '', [], 100, 404);
       } else {
-         // Return full HTML page for regular requests
-         $content = View::render('errors/404');
-         echo View::layout('layouts/app', $content, [
-            'title' => '404 - Page Not Found'
-         ]);
+         // Try to use the app layout if possible, otherwise render standalone
+         try {
+            $content = View::render('errors/404');
+            echo View::layout('layouts/app', $content, [
+               'title' => '404 - Page Not Found'
+            ]);
+         } catch (\Throwable $e) {
+            // Fallback to direct rendering if layout fails or views are missing in unusual ways
+            echo $this->renderFallback404();
+         }
       }
    }
 
    /**
     * Handle 403 Forbidden errors
-    * 
-    * @param array $permissions Required permissions (optional)
-    * @param array $roles Required roles (optional)
-    * @return void
     */
    public function forbidden(array $permissions = [], array $roles = []): void
    {
       http_response_code(403);
-
+      // Implementation similar to 404 but for 403
       $uri = $_SERVER['REQUEST_URI'] ?? '/';
       $isApiRequest = str_starts_with($uri, '/api/');
       $isSpaRequest = $this->isSpaRequest();
@@ -70,39 +69,23 @@ class ErrorController extends Controller
       ];
 
       if ($isApiRequest) {
-         // Return JSON error for API requests
-         $jsonData = [
+         View::json([
             'error' => true,
-            'message' => 'Forbidden - Insufficient permissions',
+            'message' => 'Forbidden',
             'code' => 403,
-         ];
-
-         if (!empty($permissions)) {
-            $jsonData['required_permissions'] = $permissions;
-         }
-
-         if (!empty($roles)) {
-            $jsonData['required_roles'] = $roles;
-         }
-
-         View::json($jsonData, 403);
+         ], 403);
       } elseif ($isSpaRequest) {
-         // Return SPA-compatible response
-         View::page('errors/403', $data);
+         View::page('errors/403', $data, '', [], 100, 403);
       } else {
-         // Return full HTML page for regular requests
-         $content = View::render('errors/403', $data);
-         echo View::layout('layouts/app', $content, [
-            'title' => '403 - Forbidden'
-         ]);
+         try {
+            $content = View::render('errors/403', $data);
+            echo View::layout('layouts/app', $content, $data);
+         } catch (\Throwable $e) {
+            echo "<h1>403 Forbidden</h1>";
+         }
       }
    }
 
-   /**
-    * Check if the current request is a SPA request
-    * 
-    * @return bool
-    */
    private function isSpaRequest(): bool
    {
       return (
@@ -112,5 +95,10 @@ class ErrorController extends Controller
          isset($_SERVER['HTTP_ACCEPT']) &&
          str_contains($_SERVER['HTTP_ACCEPT'], 'application/json')
       );
+   }
+
+   private function renderFallback404(): string
+   {
+      return '<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 - Page Not Found</h1><p>The requested resource was not found.</p></body></html>';
    }
 }

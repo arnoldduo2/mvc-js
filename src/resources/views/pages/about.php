@@ -1,3 +1,6 @@
+<?php
+
+declare(strict_types=1); ?>
 <div class="page-about">
    <div class="container">
       <h1><?= $title ?? 'About MVC-JS Framework' ?></h1>
@@ -91,9 +94,9 @@
          <h2>📚 Documentation</h2>
          <p>Comprehensive documentation available:</p>
          <ul class="tech-stack">
-            <li><a href="https://github.com/yourusername/mvc-js/blob/main/README.md" target="_blank">README</a> - Quick start and overview</li>
-            <li><a href="https://github.com/yourusername/mvc-js/blob/main/ARCHITECTURE.md" target="_blank">Architecture Guide</a> - System design and patterns</li>
-            <li><a href="https://github.com/yourusername/mvc-js/blob/main/AUTHORS.md" target="_blank">Authors</a> - Contributors and credits</li>
+            <li><a href="https://github.com/arnoldduo2/mvc-js/blob/main/README.md" target="_blank">README</a> - Quick start and overview</li>
+            <li><a href="https://github.com/arnoldduo2/mvc-js/blob/main/ARCHITECTURE.md" target="_blank">Architecture Guide</a> - System design and patterns</li>
+            <li><a href="https://github.com/arnoldduo2/mvc-js/blob/main/AUTHORS.md" target="_blank">Authors</a> - Contributors and credits</li>
          </ul>
       </section>
 
