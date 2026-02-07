@@ -261,6 +261,11 @@ class Application
          $this->boot();
       }
 
+      // Start session if not already started
+      if (session_status() === PHP_SESSION_NONE) {
+         session_start();
+      }
+
       try {
          // Use the modern router's dispatch method
          Router::dispatch();

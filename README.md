@@ -121,8 +121,7 @@ mvc-js/
 │   │   ├── web.php
 │   │   └── api.php
 │   └── storage/             # Logs, cache, uploads
-├── database/
-│   └── migrations/          # Database migration files
+├── src/database/            # Database migration files
 ├── vendor/                  # Composer dependencies
 ├── console                  # CLI entry point
 ├── .htaccess               # Apache rewrite rules

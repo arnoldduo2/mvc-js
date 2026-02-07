@@ -80,7 +80,7 @@ class FormController extends Controller
    /**
     * Success page
     */
-   public function success(): void
+   public function showSuccess(): void
    {
       if (session_status() === PHP_SESSION_NONE) {
          session_start();

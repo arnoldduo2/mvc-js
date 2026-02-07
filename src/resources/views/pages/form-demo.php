@@ -1,6 +1,8 @@
 <?php
 
-use App\App\Core\Form;
+declare(strict_types=1);
+
+
 ?>
 
 <div class="page-form-demo">
@@ -29,7 +31,7 @@ use App\App\Core\Form;
 
       <!-- Demo Form -->
       <section class="form-section">
-         <h2>📝 Demo Registration Form</h2>
+         <?php component_open('ui.card', ['title' => '📝 Demo Registration Form', 'class' => 'form-card']) ?>
 
          <?php if (has_error('_token')): ?>
             <div class="alert alert-error">
@@ -37,72 +39,86 @@ use App\App\Core\Form;
             </div>
          <?php endif; ?>
 
-         <?= Form::open(url('/forms/submit'), 'POST', ['class' => 'demo-form']) ?>
+         <?= form_open(url('/forms/submit'), 'POST', ['class' => 'demo-form']) ?>
 
          <div class="form-group">
-            <label for="name">Name <span class="required">*</span></label>
-            <?= Form::input('name', old('name'), ['placeholder' => 'John Doe', 'class' => has_error('name') ? 'error' : '']) ?>
-            <?= Form::error('name') ?>
-            <small>Minimum 3 characters, maximum 50</small>
+            <?= form_component('form.input', [
+               'name' => 'name',
+               'label' => 'Name',
+               'value' => old('name'),
+               'placeholder' => 'John Doe',
+               'required' => true,
+               'className' => has_error('name') ? 'is-invalid' : '',
+               'slot' => 'Minimum 3 characters, maximum 50'
+            ]) ?>
          </div>
 
          <div class="form-group">
             <label for="email">Email <span class="required">*</span></label>
-            <?= Form::email('email', old('email'), ['placeholder' => 'john@example.com', 'class' => has_error('email') ? 'error' : '']) ?>
-            <?= Form::error('email') ?>
+            <?= form_email('email', old('email'), ['placeholder' => 'john@example.com', 'class' => has_error('email') ? 'error' : '']) ?>
+            <?= form_error('email') ?>
          </div>
 
          <div class="form-group">
-            <label for="age">Age <span class="required">*</span></label>
-            <?= Form::number('age', old('age'), ['placeholder' => '25', 'class' => has_error('age') ? 'error' : '']) ?>
-            <?= Form::error('age') ?>
-            <small>Must be between 18 and 120</small>
+            <?= form_component('form.input', [
+               'name' => 'age',
+               'type' => 'number',
+               'label' => 'Age',
+               'value' => old('age'),
+               'placeholder' => '25',
+               'required' => true,
+               'min' => 18,
+               'max' => 120,
+               'className' => has_error('age') ? 'is-invalid' : '',
+               'slot' => 'Must be between 18 and 120'
+            ]) ?>
          </div>
 
          <div class="form-group">
             <label for="website">Website</label>
-            <?= Form::input('website', old('website'), ['placeholder' => 'https://example.com', 'class' => has_error('website') ? 'error' : '']) ?>
-            <?= Form::error('website') ?>
+            <?= form_input('website', old('website'), ['placeholder' => 'https://example.com', 'class' => has_error('website') ? 'error' : '']) ?>
+            <?= form_error('website') ?>
             <small>Optional, but must be valid URL if provided</small>
          </div>
 
          <div class="form-group">
             <label for="gender">Gender <span class="required">*</span></label>
-            <?= Form::select('gender', [
+            <?= form_select('gender', [
                '' => 'Select gender',
                'male' => 'Male',
                'female' => 'Female',
                'other' => 'Other'
             ], old('gender'), ['class' => has_error('gender') ? 'error' : '']) ?>
-            <?= Form::error('gender') ?>
+            <?= form_error('gender') ?>
          </div>
 
          <div class="form-group">
             <label for="password">Password <span class="required">*</span></label>
-            <?= Form::password('password', ['placeholder' => 'Enter password', 'class' => has_error('password') ? 'error' : '']) ?>
-            <?= Form::error('password') ?>
+            <?= form_password('password', ['placeholder' => 'Enter password', 'class' => has_error('password') ? 'error' : '']) ?>
+            <?= form_error('password') ?>
             <small>Min 8 chars, must include uppercase, lowercase, number, and special character</small>
          </div>
 
          <div class="form-group">
             <label for="password_confirmation">Confirm Password <span class="required">*</span></label>
-            <?= Form::password('password_confirmation', ['placeholder' => 'Confirm password']) ?>
+            <?= form_password('password_confirmation', ['placeholder' => 'Confirm password']) ?>
          </div>
 
          <div class="form-group">
             <label class="checkbox-label">
-               <?= Form::checkbox('terms', '1', false, ['class' => has_error('terms') ? 'error' : '']) ?>
+               <?= form_checkbox('terms', '1', false, ['class' => has_error('terms') ? 'error' : '']) ?>
                I agree to the terms and conditions <span class="required">*</span>
             </label>
-            <?= Form::error('terms') ?>
+            <?= form_error('terms') ?>
          </div>
 
          <div class="form-actions">
-            <?= Form::submit('Submit Form', ['class' => 'btn btn-primary']) ?>
+            <?= form_submit('Submit Form', ['class' => 'btn btn-primary']) ?>
             <a href="<?= url('/') ?>" class="btn">Cancel</a>
          </div>
 
-         <?= Form::close() ?>
+         <?= form_close() ?>
+         <?= component_close() ?>
       </section>
 
       <!-- Code Examples -->

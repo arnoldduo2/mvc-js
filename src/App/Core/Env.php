@@ -22,11 +22,6 @@ class Env
       $key = strtoupper($key);
       $env = $default;
 
-      //Early return if default is provided
-      if ($default !== null) {
-         return $default;
-      }
-
       // Explode the file content by new lines
       $variables = explode("\n", $file);
 

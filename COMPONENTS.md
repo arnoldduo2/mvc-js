@@ -21,41 +21,47 @@ Components are stored in the `src/resources/views/components` directory. You can
 
 ## Using Components
 
-To render a component, use the `View::component()` method. You can use dot notation to reference nested components.
-
-```php
-use App\App\Core\View;
-```
+To render a component, use the `View::component()` method or the `component()` helper function. You can use dot notation to reference nested components.
 
 **Basic Usage:**
 
 ```php
-<?= View::component('ui.card', ['title' => 'My Component']) ?>
+<?= component('ui.card', ['title' => 'My Component']) ?>
 ```
 
-**Passing Data:**
+### Slot-Based Components
 
-You can pass an array of data as the second argument. The keys will be extracted as variables within the component.
+For components that wrap content (like a card or modal), use `component_open()` and `component_close()`. The content between these calls will be passed as the `$slot` variable.
 
 ```php
-<?= View::component('profile.avatar', [
-    'user' => $user,
-    'size' => 'large'
+<?php component_open('ui.card', ['title' => 'My Card']) ?>
+    <p>This is the content of the card.</p>
+    <button>Click Me</button>
+<?= component_close() ?>
+```
+
+### Legacy-Style Components
+
+For components that mimic the legacy application style (e.g., input fields with labels and error handling), use the `form_component()` helper.
+
+**Example: Legacy Input**
+
+This renders a full form group with label, required asterisk, input field, and error feedback.
+
+```php
+<?= form_component('form.input', [
+    'name' => 'username',
+    'label' => 'Username',
+    'value' => old('username'),
+    'required' => true,
+    'placeholder' => 'Enter username',
+    'slot' => 'Unique username for your account' // Renders as help text
 ]) ?>
 ```
 
-## Global Helper
+## Helper Functions
 
-If you prefer, you can define a helper function for even cleaner syntax (optional user implementation):
-
-```php
-function component($name, $data = []) {
-    return \App\App\Core\View::component($name, $data);
-}
-```
-
-Then usages becomes:
-
-```php
-<?= component('ui.card', ['title' => 'Hello']) ?>
-```
+- `component(string $name, array $data = [])`: Render a component immediately.
+- `component_open(string $name, array $data = [])`: Start a component buffering block.
+- `component_close()`: End a component buffering block and render.
+- `form_component(string $name, array $data = [])`: Render a form component (alias for `component` but often used for form logic).

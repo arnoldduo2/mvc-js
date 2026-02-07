@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace App\Helpers;
+
 class MessageHelper
 {
    public static function sendAlert(string $type, string $message, bool $isHtml = true): string

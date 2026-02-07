@@ -17,7 +17,7 @@ The MVC-JS framework includes a powerful, bidirectional database migration syste
 php console make:migration create_products_table
 ```
 
-This creates a new migration file in `database/migrations/` with a timestamp prefix.
+This creates a new migration file in `src/database/migrations/` with a timestamp prefix.
 
 ### Running Migrations
 
@@ -352,16 +352,16 @@ If you get foreign key constraint errors, ensure:
 
 Make sure:
 
-- Migration file is in `database/migrations/`
+- Migration file is in `src/database/migrations/`
 - Filename follows format: `YYYYMMDDHHMMSS_description.php`
 - Class name matches: `Migration_YYYYMMDDHHMMSS_description`
 
 ### Permission Errors
 
-Ensure the `database/migrations/` directory is writable:
+Ensure the `src/database/migrations/` directory is writable:
 
 ```bash
-chmod -R 755 database/migrations
+chmod -R 755 src/database/migrations
 ```
 
 ## Advanced Features

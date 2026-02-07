@@ -30,6 +30,8 @@ declare(strict_types=1); ?>
                <li><a href="#controller-helpers">Controller Helpers</a></li>
                <li><a href="#views">Views</a></li>
                <li><a href="#components">Components</a></li>
+               <li><a href="#session">Session</a></li>
+               <li><a href="#cookies">Cookies</a></li>
                <li><a href="#spa">SPA System</a></li>
             </ul>
          </div>
@@ -502,6 +504,45 @@ View::cached('pages/home', $data, 3600);</code></pre>
 
 // Dot notation
 <?= "<?=" ?> View::component('forms.input', ['name' => 'email']) ?></code></pre>
+            </div>
+         </section>
+
+         <!-- Session -->
+         <section id="session" class="doc-section">
+            <h2>💾 Session Manager</h2>
+            <p>Robust session management with legacy compatibility. <a href="<?= url('/') ?>/SESSION.md" target="_blank">View full documentation</a></p>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Usage</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">// Set session data
+Session::put('key', 'value');
+session()->put('key', 'value');
+
+// Get session data
+$value = Session::get('key');
+$value = session('key');</code></pre>
+            </div>
+         </section>
+
+         <!-- Cookies -->
+         <section id="cookies" class="doc-section">
+            <h2>🍪 Cookie Management</h2>
+            <p>Secure cookie handling with configurable defaults. <a href="<?= url('/') ?>/COOKIES.md" target="_blank">View full documentation</a></p>
+
+            <div class="code-block">
+               <div class="code-header">
+                  <span>Usage</span>
+                  <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+               </div>
+               <pre><code class="language-php">// Set cookie
+Cookie::set('theme', 'dark', 120);
+
+// Get cookie
+$theme = Cookie::get('theme');
+$theme = cookie('theme');</code></pre>
             </div>
          </section>
 

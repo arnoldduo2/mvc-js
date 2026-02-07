@@ -1,0 +1,15 @@
+{
+  "MinifyAll.disableJavascriptReact": false,
+  "augment.advanced": {
+    "mcpServers": [
+      {
+        "Context7": {
+          "type": "stdio",
+          "command": "npx",
+          "args": ["-y", "@upstash/context7-mcp@latest"]
+        }
+      }
+    ]
+  },
+  "geminicodeassist.chat.collapseCodeBlocksByDefault": true
+}

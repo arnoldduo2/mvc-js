@@ -29,16 +29,31 @@ Router::get('/cache/cleanup', [CacheController::class, 'cleanup'])->name('cache.
 // Form validation demo routes
 Router::get('/forms', [FormController::class, 'index'])->name('forms.demo');
 Router::post('/forms/submit', [FormController::class, 'submit'])->name('forms.submit');
-Router::get('/forms/success', [FormController::class, 'success'])->name('forms.success');
+Router::get('/forms/success', [FormController::class, 'showSuccess'])->name('forms.success');
+
+// Authentication and User Management
+use App\App\Controllers\AuthController;
+use App\App\Controllers\UserController;
+
+// User Management Routes (protected with auth middleware)
+Router::group(['prefix' => 'users', 'middleware' => ['auth']], function () {
+   Router::get('/', [UserController::class, 'index'])->name('users.index');
+   Router::get('/create', [UserController::class, 'create'])->name('users.create');
+   Router::post('/', [UserController::class, 'store'])->name('users.store');
+   Router::get('/{id}', [UserController::class, 'show'])->name('users.show');
+   Router::get('/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+   Router::post('/{id}', [UserController::class, 'update'])->name('users.update');
+   Router::post('/{id}/delete', [UserController::class, 'destroy'])->name('users.destroy');
+});
 
 
 
-// Login page (example)
-Router::get('/login', function () {
-   echo "<h1>Login</h1>";
-   echo "<p>Login form would go here.</p>";
-   echo "<p><a href='/'>Home</a></p>";
-})->name('login');
+// Authentication Routes (public)
+Router::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Router::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Router::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Router::post('/register', [AuthController::class, 'register'])->name('register.submit');
+Router::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin routes (require authentication + role)
 Router::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function () {

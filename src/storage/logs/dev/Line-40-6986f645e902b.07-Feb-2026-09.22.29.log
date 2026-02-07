@@ -1,0 +1,18 @@
+file_get_contents(D:\APPDEV\xampp\htdocs\mvc-js\src\App/resources/js/timer-patch.js): Failed to open stream: No such file or directory in D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\View.php on line 40
+#0 [internal function]: Anode\ErrorHandler\ErrorHandler->handleError(2, 'file_get_conten...', 'D:\\APPDEV\\xampp...', 40)
+#1 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\View.php(40): file_get_contents('D:\\APPDEV\\xampp...')
+#2 D:\APPDEV\xampp\htdocs\mvc-js\src\resources\views\layouts\app.php(17): App\App\Core\View::coreScripts()
+#3 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\View.php(90): include('D:\\APPDEV\\xampp...')
+#4 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\View.php(151): App\App\Core\View::render('layouts/app', Array)
+#5 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Controller.php(39): App\App\Core\View::layout('layouts/app', '<div class="doc...', Array)
+#6 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Controllers\HomeController.php(19): App\App\Core\Controller->view('pages/home', Array)
+#7 [internal function]: App\App\Controllers\HomeController->index()
+#8 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(314): call_user_func_array(Array, Array)
+#9 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(255): App\App\Core\Router::executeAction(Array, Array)
+#10 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(261): App\App\Core\Router::App\App\Core\{closure}(Array)
+#11 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Router.php(221): App\App\Core\Router::executeRoute(Object(App\App\Core\Route), Array)
+#12 D:\APPDEV\xampp\htdocs\mvc-js\src\App\Core\Application.php(163): App\App\Core\Router::dispatch()
+#13 D:\APPDEV\xampp\htdocs\mvc-js\src\boot\app.php(20): App\App\Core\Application->run()
+#14 D:\APPDEV\xampp\htdocs\mvc-js\index.php(20): require_once('D:\\APPDEV\\xampp...')
+#15 D:\APPDEV\xampp\htdocs\mvc-js\src\boot\boot.php(38): require_once('D:\\APPDEV\\xampp...')
+#16 {main}

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace App\Helpers;
+
 class AppLogicHelpers
 {
    public static function init(string $app_name, string $app_path): void

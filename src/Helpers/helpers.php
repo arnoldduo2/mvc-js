@@ -7,8 +7,15 @@ declare(strict_types=1);
 // without namespace qualification
 
 use App\App\Core\Env;
+use App\Helpers\AppLogicHelpers;
 use App\Helpers\StringHelper;
 use App\Helpers\EncyptionHelper;
+use App\Helpers\MessageHelper;
+
+
+//Dev Helpers
+require_once __DIR__ . '/dev.php';
+
 
 /**
  * Get an environment variable value
@@ -302,4 +309,271 @@ function redirect(string $url, int $code = 302): void
 {
    header("Location: {$url}", true, $code);
    exit;
+}
+
+// ==================== COMPONENT HELPERS ====================
+
+/**
+ * Render a component
+ * 
+ * @param string $name Component name
+ * @param array $data Component data
+ * @return string
+ */
+function component(string $name, array $data = []): string
+{
+   return \App\App\Core\View::component($name, $data);
+}
+
+/**
+ * Open a component wrapping context
+ * 
+ * @param string $name Component name
+ * @param array $data Component data
+ * @return void
+ */
+function component_open(string $name, array $data = []): void
+{
+   \App\App\Core\Component::open($name, $data);
+}
+
+/**
+ * Close a component wrapping context
+ * 
+ * @return string
+ */
+function component_close(): string
+{
+   return \App\App\Core\Component::close();
+}
+
+// ==================== FORM HELPERS ====================
+
+/**
+ * Open a form
+ * 
+ * @param string $action Form action URL
+ * @param string $method HTTP method
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_open(string $action, string $method = 'POST', array $attributes = []): string
+{
+   return \App\App\Core\Form::open($action, $method, $attributes);
+}
+
+/**
+ * Close a form
+ * 
+ * @return string
+ */
+function form_close(): string
+{
+   return \App\App\Core\Form::close();
+}
+
+/**
+ * Create a text input
+ * 
+ * @param string $name Field name
+ * @param mixed $value Field value
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_input(string $name, mixed $value = null, array $attributes = []): string
+{
+   return \App\App\Core\Form::input($name, $value, $attributes);
+}
+
+/**
+ * Create an email input
+ * 
+ * @param string $name Field name
+ * @param mixed $value Field value
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_email(string $name, mixed $value = null, array $attributes = []): string
+{
+   return \App\App\Core\Form::email($name, $value, $attributes);
+}
+
+/**
+ * Create a password input
+ * 
+ * @param string $name Field name
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_password(string $name, array $attributes = []): string
+{
+   return \App\App\Core\Form::password($name, $attributes);
+}
+
+/**
+ * Create a number input
+ * 
+ * @param string $name Field name
+ * @param mixed $value Field value
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_number(string $name, mixed $value = null, array $attributes = []): string
+{
+   return \App\App\Core\Form::number($name, $value, $attributes);
+}
+
+/**
+ * Create a textarea
+ * 
+ * @param string $name Field name
+ * @param mixed $value Field value
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_textarea(string $name, mixed $value = null, array $attributes = []): string
+{
+   return \App\App\Core\Form::textarea($name, $value, $attributes);
+}
+
+/**
+ * Create a select dropdown
+ * 
+ * @param string $name Field name
+ * @param array $options Options array [value => label]
+ * @param mixed $selected Selected value
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_select(string $name, array $options, mixed $selected = null, array $attributes = []): string
+{
+   return \App\App\Core\Form::select($name, $options, $selected, $attributes);
+}
+
+/**
+ * Create a checkbox
+ * 
+ * @param string $name Field name
+ * @param mixed $value Checkbox value
+ * @param bool $checked Is checked?
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_checkbox(string $name, mixed $value = '1', bool $checked = false, array $attributes = []): string
+{
+   return \App\App\Core\Form::checkbox($name, $value, $checked, $attributes);
+}
+
+/**
+ * Create a radio button
+ * 
+ * @param string $name Field name
+ * @param mixed $value Radio value
+ * @param bool $checked Is checked?
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_radio(string $name, mixed $value, bool $checked = false, array $attributes = []): string
+{
+   return \App\App\Core\Form::radio($name, $value, $checked, $attributes);
+}
+
+/**
+ * Create a submit button
+ * 
+ * @param string $text Button text
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_submit(string $text = 'Submit', array $attributes = []): string
+{
+   return \App\App\Core\Form::submit($text, $attributes);
+}
+
+/**
+ * Create a button
+ * 
+ * @param string $text Button text
+ * @param array $attributes HTML attributes
+ * @return string
+ */
+function form_button(string $text, array $attributes = []): string
+{
+   return \App\App\Core\Form::button($text, $attributes);
+}
+
+/**
+ * Display validation error for a field
+ * 
+ * @param string $field Field name
+ * @return string HTML error string
+ */
+function form_error(string $field): string
+{
+   return \App\App\Core\Form::error($field);
+}
+
+/**
+ * Render a form component (like input, select, etc)
+ * 
+ * @param string $component Component name (e.g. 'form.input')
+ * @param array $data Component data
+ * @return string
+ */
+function form_component(string $component, array $data = []): string
+{
+   return \App\App\Core\View::component($component, $data);
+}
+
+function __requiredAttr($isRequired = null, $isDisabled = null, $isReadonly = null)
+{
+   $attr = $isRequired ? ' required' : '';
+   $attr .=  $isDisabled ? ' disabled' : '';
+   $attr .=  $isReadonly ? ' readonly' : '';
+   return $attr;
+}
+
+function __attr($attr = [])
+{
+   $html = [];
+   foreach ($attr as $key => $val) {
+      if (is_bool($val)) {
+         if ($val) $html[] = $key;
+      } else {
+         $html[] = $key . '="' . htmlspecialchars((string) $val) . '"';
+      }
+   }
+   return implode(' ', $html);
+}
+
+/**
+ * Get session instance or value
+ * 
+ * @param string|null $key
+ * @param mixed $default
+ * @return mixed|\App\App\Core\Session
+ */
+function session(?string $key = null, mixed $default = null): mixed
+{
+   if ($key === null) {
+      return new \App\App\Core\Session();
+   }
+
+   return \App\App\Core\Session::get($key, $default);
+}
+
+/**
+ * Get cookie instance or value
+ * 
+ * @param string|null $key
+ * @param mixed $default
+ * @return mixed|\App\App\Core\Cookie
+ */
+function cookie(?string $key = null, mixed $default = null): mixed
+{
+   if ($key === null) {
+      return new \App\App\Core\Cookie();
+   }
+
+   return \App\App\Core\Cookie::get($key, $default);
 }

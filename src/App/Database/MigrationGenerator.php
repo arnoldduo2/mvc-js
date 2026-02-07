@@ -25,7 +25,7 @@ class MigrationGenerator
      */
     private function getDefaultMigrationsPath(): string
     {
-        return dirname(__DIR__, 4) . '/database/migrations';
+        return dirname(__DIR__, 4) . '/src/database/migrations';
     }
 
     /**

@@ -382,8 +382,8 @@ class Router
             $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
             $basePath = dirname($scriptName);
 
-            // If in root, return empty string
-            if ($basePath === '/' || $basePath === '\\') {
+            // If in root or current directory, return empty string
+            if ($basePath === '/' || $basePath === '\\' || $basePath === '.') {
                 $basePath = '';
             }
         }

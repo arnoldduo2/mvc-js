@@ -1,0 +1,1 @@
+Declaration of App\App\Controllers\FormController::success(): void must be compatible with App\App\Core\Controller::success(string $message, array $data = [], int $statusCode = 200): void in D:\APPDEV\xampp\htdocs\mvc-js\src\App\Controllers\FormController.php on line 83

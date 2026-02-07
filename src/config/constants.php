@@ -35,12 +35,12 @@ $constants = [
    'APP_CONFIG' => $appPath . '/config',
 
    // Database Configuration
-   'DB_ENG' => env('DB_ENG', 'mysql'),
+   'DB_ENGINE' => env('DB_ENGINE', 'mysql'),
    'DB_HOST' => env('DB_HOST', '127.0.0.1'),
    'DB_PORT' => env('DB_PORT', '3306'),
    'DB_NAME' => env('DB_NAME', 'mvc_js'),
-   'DB_USER' => env('DB_USER', 'root'),
-   'DB_PASS' => env('DB_PASS', ''),
+   'DB_USERNAME' => env('DB_USERNAME', 'root'),
+   'DB_PASSWORD' => env('DB_PASSWORD', ''),
 
    // Session Configuration
    'SESSION_LIFETIME' => (int) env('SESSION_LIFETIME', 120),

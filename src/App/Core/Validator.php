@@ -390,7 +390,7 @@ class Validator
    /**
     * Add validation error
     */
-   private function addError(string $field, string $rule, array $replacements = []): void
+   public function addError(string $field, string $rule, array $replacements = []): void
    {
       $message = $this->getErrorMessage($field, $rule, $replacements);
       $this->errors[$field][] = $message;
