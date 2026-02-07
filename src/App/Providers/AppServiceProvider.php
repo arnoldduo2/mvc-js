@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
     */
    public function register(): void
    {
-      $this->app->bind(\App\App\Services\TestServiceContract::class, \App\App\Services\TestService::class);
+      // Bind your services here
    }
 
    /**
