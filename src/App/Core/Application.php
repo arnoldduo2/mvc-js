@@ -72,6 +72,25 @@ class Application
       // Load system files
       $this->loadSystemFiles();
 
+      // Check System Requirements
+      // This runs on every request to ensure the environment is valid.
+      // If performance is a concern, this could be cached or disabled in production.
+      $checker = new \App\App\Services\RequirementChecker();
+      if (!$checker->passes()) {
+         $results = $checker->check(); // Get results to display
+
+         if (php_sapi_name() === 'cli') {
+            echo "\033[31mSystem Requirements Failed!\033[0m\n";
+            echo "Run 'php console requirements:check' for details.\n";
+            exit(1);
+         }
+
+         // Render error view
+         http_response_code(500);
+         require APP_PATH . '/resources/views/errors/requirements.php';
+         exit;
+      }
+
       // Initialize error handling
       $this->initializeErrorHandling();
 

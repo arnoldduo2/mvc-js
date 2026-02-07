@@ -42,6 +42,7 @@ declare(strict_types=1); ?>
                <li><a href="#caching">Caching</a></li>
                <li><a href="#validation">Validation</a></li>
                <li><a href="#helpers">Helpers</a></li>
+               <li><a href="#requirements">System Requirements</a></li>
             </ul>
          </div>
 
@@ -679,18 +680,35 @@ has_error('email');
 snakeCase('HelloWorld');  // hello_world
 camelCase('hello_world'); // helloWorld</code></pre>
             </div>
-         </section>
+            <!-- Helpers -->
+            <section id="helpers" class="doc-section">
+               <!-- ... existing helpers content ... -->
+            </section>
 
-         <!-- Footer -->
-         <footer class="docs-footer">
-            <p>Built with ❤️ by the MVC-JS Team</p>
-            <p>
-               <a href="https://github.com/arnoldduo2/mvc-js" target="_blank">GitHub</a> •
-               <a href="<?= url('/about') ?>">About</a> •
-               <a href="<?= url('/cache') ?>">Cache Demo</a> •
-               <a href="<?= url('/forms') ?>">Forms Demo</a>
-            </p>
-         </footer>
+            <!-- System Requirements -->
+            <section id="requirements" class="doc-section">
+               <h2>🖥️ System Requirements</h2>
+               <p>Ensure your server meets the necessary requirements. <a href="<?= url('/') ?>/REQUIREMENTS.md" target="_blank">View full documentation</a></p>
+
+               <div class="code-block">
+                  <div class="code-header">
+                     <span>CLI Check</span>
+                     <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                  </div>
+                  <pre><code class="language-bash">php console requirements:check</code></pre>
+               </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="docs-footer">
+               <p>Built with ❤️ by the MVC-JS Team</p>
+               <p>
+                  <a href="https://github.com/arnoldduo2/mvc-js" target="_blank">GitHub</a> •
+                  <a href="<?= url('/about') ?>">About</a> •
+                  <a href="<?= url('/cache') ?>">Cache Demo</a> •
+                  <a href="<?= url('/forms') ?>">Forms Demo</a>
+               </p>
+            </footer>
 
       </div>
    </main>

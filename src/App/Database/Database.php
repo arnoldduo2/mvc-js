@@ -15,19 +15,29 @@ class Database
     public static function initialize(): ?PDO
     {
         if (self::$conn === null) {
-            $dsn = DB_ENG . ':host=' . DB_HOST . ';dbname=' . DB_NAME;
-            $dbuser = DB_USER;
-            $dbpass = DB_PASS;
             try {
-                self::$conn = new PDO($dsn, $dbuser, $dbpass);
+                $engine = env('DB_ENGINE', 'mysql');
+                $host = env('DB_HOST', '127.0.0.1');
+                $name = env('DB_NAME', 'mvc_js');
+                $user = env('DB_USERNAME', 'root');
+                $pass = env('DB_PASSWORD', '');
+
+                if ($engine === 'sqlite') {
+                    $dsn = "sqlite:" . $name;
+                    self::$conn = new PDO($dsn);
+                } else {
+                    $dsn = "{$engine}:host={$host};dbname={$name}";
+                    self::$conn = new PDO($dsn, $user, $pass);
+                }
+
                 self::$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 self::$conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-                // Return the connection
+
                 return self::$conn;
             } catch (PDOException $e) {
                 throw new PDOException($e->getMessage());
             }
         }
-        return null;
+        return self::$conn;
     }
 }

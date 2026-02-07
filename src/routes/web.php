@@ -60,3 +60,38 @@ Router::get('/test/auto-assets', function () {
 
 // Test route for Dependency Injection
 Router::get('/test/di', [\App\App\Controllers\TestDIController::class, 'index']);
+
+// System Requirements Check
+Router::get('/requirements', function () {
+   $checker = new \App\App\Services\RequirementChecker();
+   $results = $checker->check();
+   $passes = $checker->passes();
+
+   // Simple inline view for diagnostics
+   echo "<!DOCTYPE html><html><head><title>System Requirements</title>";
+   echo "<style>body{font-family:sans-serif;padding:2rem;max-width:800px;margin:0 auto;background:#f4f4f4}";
+   echo ".card{background:white;padding:2rem;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}";
+   echo "h1{margin-top:0}.pass{color:green}.fail{color:red}.item{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:0.5rem 0}";
+   echo ".message{font-size:0.9em;color:#666;margin-top:0.25rem}</style></head><body>";
+   echo "<div class='card'><h1>System Requirements</h1>";
+
+   // Overall Status
+   echo "<h3>Overall Status: " . ($passes ? "<span class='pass'>PASS</span>" : "<span class='fail'>FAIL</span>") . "</h3>";
+
+   // PHP
+   $php = $results['php'];
+   echo "<div class='item'><strong>PHP Version</strong><span class='" . ($php['pass'] ? 'pass' : 'fail') . "'>" . ($php['pass'] ? 'PASS' : 'FAIL') . "</span></div>";
+   echo "<div class='message'>{$php['message']}</div>";
+
+   echo "<h4>Extensions</h4>";
+   foreach ($results['extensions'] as $ext) {
+      echo "<div class='item'><span>{$ext['name']}</span><span class='" . ($ext['pass'] ? 'pass' : 'fail') . "'>" . ($ext['pass'] ? 'PASS' : 'FAIL') . "</span></div>";
+   }
+
+   echo "<h4>Functions</h4>";
+   foreach ($results['functions'] as $func) {
+      echo "<div class='item'><span>{$func['name']}</span><span class='" . ($func['pass'] ? 'pass' : 'fail') . "'>" . ($func['pass'] ? 'PASS' : 'FAIL') . "</span></div>";
+   }
+
+   echo "</div></body></html>";
+});
